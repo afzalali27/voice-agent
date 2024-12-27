@@ -21,3 +21,6 @@ __pycache__/
 
 # Environment variables
 .env
+
+# response files
+audio_responses

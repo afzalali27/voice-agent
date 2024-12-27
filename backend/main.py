@@ -5,9 +5,16 @@ import speech_recognition as sr
 import logging
 from groq import Groq
 from helpers import tasks
+import os
+import pyttsx3
 
 # Set up the OpenAI API key
 client = Groq(api_key=Config.GROQ_API_KEY)
+
+# Initialize TTS engine
+tts_engine = pyttsx3.init()
+audio_output_dir = "audio_responses"
+os.makedirs(audio_output_dir, exist_ok=True)
 
 app = FastAPI()
 
@@ -49,14 +56,25 @@ async def process_input(text_input: str = None, audio_file: UploadFile = None):
         )
 
         ai_response = response.choices[0].message.content
+
+        audio_file_path = os.path.join(audio_output_dir, "response.aiff")
+        tts_engine.save_to_file(ai_response, audio_file_path)
+        logging.info(f"Generated audio response...")
+        tts_engine.runAndWait()
+
+        
         
         if "schedule" in ai_response and "appointment" in ai_response:
             return {"response": tasks.create_appointment("2024-12-30", "2:00 PM")}
         elif "reserve" in ai_response and "restaurant" in ai_response:
             return {"response": tasks.make_reservation("Cafe Delight", "7:00 PM")}
         else:
-            return {"response": tasks.default_response(ai_response)}
-
+            return {
+            "response": ai_response,
+            "audio_url": f"/audio/{os.path.basename(audio_file_path)}"
+        }
+    
     except Exception as e:
+        tts_engine.stop()
         return {"response": f"Error processing input: {str(e)}"}
     
