@@ -1,21 +1,18 @@
+from config import Config
 from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
 import speech_recognition as sr
 import logging
 from groq import Groq
-from dotenv import load_dotenv
-import os
-
-# Load environment variables from .env file
-load_dotenv()
+from helpers import tasks
 
 # Set up the OpenAI API key
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = Groq(api_key=Config.GROQ_API_KEY)
 
 app = FastAPI()
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=Config.LOG_LEVEL)
 
 @app.get("/")
 async def root():
@@ -52,7 +49,13 @@ async def process_input(text_input: str = None, audio_file: UploadFile = None):
         )
 
         ai_response = response.choices[0].message.content
-        return {"response": ai_response}
+        
+        if "schedule" in ai_response and "appointment" in ai_response:
+            return {"response": tasks.create_appointment("2024-12-30", "2:00 PM")}
+        elif "reserve" in ai_response and "restaurant" in ai_response:
+            return {"response": tasks.make_reservation("Cafe Delight", "7:00 PM")}
+        else:
+            return {"response": tasks.default_response(ai_response)}
 
     except Exception as e:
         return {"response": f"Error processing input: {str(e)}"}
