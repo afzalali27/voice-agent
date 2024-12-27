@@ -1,8 +1,16 @@
-from fastapi import FastAPI, File, UploadFile, Depends, Body
-from typing import Optional
+from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
 import speech_recognition as sr
 import logging
+from groq import Groq
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Set up the OpenAI API key
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = FastAPI()
 
@@ -36,9 +44,16 @@ async def process_input(text_input: str = None, audio_file: UploadFile = None):
     else:
         return {"response": "No input provided."}
 
-    if "schedule" in input_text and "appointment" in input_text:
-        return {"response": "Sure, I can help schedule an appointment. What date and time work for you?"}
-    elif "reserve" in input_text and "restaurant" in input_text:
-        return {"response": "Great! Which restaurant and what time should I book the reservation for?"}
-    else:
-        return {"response": "I’m sorry, I didn’t understand that. Can you please rephrase?"}
+    # Use Groq to process input text dynamically
+    try:
+        response = client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[{"role": "user", "content": input_text}],
+        )
+
+        ai_response = response.choices[0].message.content
+        return {"response": ai_response}
+
+    except Exception as e:
+        return {"response": f"Error processing input: {str(e)}"}
+    
