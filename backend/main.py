@@ -7,6 +7,8 @@ from groq import Groq
 from helpers import tasks
 import os
 import pyttsx3
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # Set up the OpenAI API key
 client = Groq(api_key=Config.GROQ_API_KEY)
@@ -20,6 +22,14 @@ app = FastAPI()
 
 # Configure logging
 logging.basicConfig(level=Config.LOG_LEVEL)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with your frontend URL for stricter security
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
@@ -76,5 +86,5 @@ async def process_input(text_input: str = None, audio_file: UploadFile = None):
     
     except Exception as e:
         tts_engine.stop()
-        return {"response": f"Error processing input: {str(e)}"}
+        return {"response": ai_response  or '', "error": f"Error processing input: {str(e)}"}
     
