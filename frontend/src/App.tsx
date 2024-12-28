@@ -5,6 +5,7 @@ import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognitio
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { debounce } from "lodash";
+import "./App.css"; // Add a custom CSS file or use Tailwind CSS for styling.
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -12,12 +13,9 @@ const App: React.FC = () => {
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
+
+  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } =
+    useSpeechRecognition();
 
   const handleApiRequest = async (input: string) => {
     setLoading(true);
@@ -81,52 +79,50 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Voice Agent</h1>
+    <div className="app-container">
+      <h1 className="app-title">Voice Agent</h1>
 
       {/* Text Input Section */}
-      <div style={{ marginBottom: "20px" }}>
+      <div className="input-section">
         <textarea
           rows={4}
           placeholder="Type your query here..."
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          style={{ width: "100%", padding: "10px" }}
+          className="text-input"
         />
-        <button
-          onClick={handleTextSubmit}
-          style={{ marginTop: "10px" }}
-          disabled={loading}
-        >
+        <button onClick={handleTextSubmit} className="submit-button" disabled={loading}>
           {loading ? "Processing..." : "Submit Text"}
         </button>
       </div>
 
       {/* Voice Input Section */}
-      <div style={{ marginBottom: "20px" }}>
-        <p>Microphone: {listening ? "ON" : "OFF"}</p>
-        <button onClick={startListening} style={{ marginRight: "10px" }} disabled={loading}>
+      <div className="voice-section">
+        <p className={`microphone-status ${listening ? "on" : "off"}`}>
+          Microphone: {listening ? "ON" : "OFF"}
+        </p>
+        {!listening ? <button onClick={startListening} className="mic-button" disabled={loading}>
           Start Listening
-        </button>
-        <button onClick={stopListening} disabled={loading}>
-          Stop Listening
-        </button>
+        </button> :
+          <button onClick={stopListening} className="mic-button" disabled={loading}>
+            Stop Listening
+          </button>}
       </div>
 
       {/* Transcript Display */}
-      <div style={{ marginBottom: "20px" }}>
+      <div className="transcript-section">
         <p>Transcript:</p>
         <textarea
           rows={4}
           value={transcript}
           placeholder="Your voice input will appear here..."
           readOnly
-          style={{ width: "100%", padding: "10px" }}
+          className="transcript-input"
         />
       </div>
 
       {/* Response Display */}
-      <div style={{ marginTop: "20px" }}>
+      <div className="response-section">
         <h3>Response:</h3>
         <p>{response}</p>
       </div>

@@ -40,3 +40,63 @@
 .read-the-docs {
   color: #888;
 }
+
+/* voice agent styles */
+
+.app-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.app-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.input-section,
+.voice-section,
+.transcript-section,
+.response-section {
+  margin-bottom: 20px;
+}
+
+.text-input,
+.transcript-input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submit-button,
+.mic-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.submit-button:disabled,
+.mic-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.microphone-status {
+  margin-bottom: 10px;
+}
+
+.microphone-status.on {
+  color: green;
+}
+
+.microphone-status.off {
+  color: red;
+}
+
