@@ -11,9 +11,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +24,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -50,7 +53,7 @@
   margin: 0 auto;
 }
 
-.app-title {
+.agent-title {
   font-size: 24px;
   margin-bottom: 20px;
 }
@@ -74,9 +77,9 @@
 .submit-button,
 .mic-button {
   margin-top: 10px;
-  padding: 10px 20px;
+  padding: 20px 30px;
   border: none;
-  border-radius: 4px;
+  border-radius: 50px;
   color: white;
   cursor: pointer;
   position: relative;
@@ -88,21 +91,41 @@
   cursor: not-allowed;
 }
 
-.loader {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  animation: spin 1s linear infinite;
+.stop-audio-button {
+  padding: 20px;
+  width: 120px;
+  background-color: #ff5c5c;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  animation: fade-in 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-@keyframes spin {
+.stop-audio-button.audio-playing {
+  animation: pulse 1.5s infinite;
+}
+
+.stop-audio-button:hover {
+  background-color: #ff3b3b;
+}
+
+@keyframes pulse {
   0% {
-    transform: rotate(0deg);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    transform: scale(1);
   }
+
+  50% {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+    transform: scale(1.05);
+  }
+
   100% {
-    transform: rotate(360deg);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    transform: scale(1);
   }
 }
 
@@ -134,10 +157,21 @@
     transform: scale(1);
     opacity: 1;
   }
+
   100% {
     transform: scale(1.5);
     opacity: 0;
   }
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
